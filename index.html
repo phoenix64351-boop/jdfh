@@ -1,0 +1,291 @@
+Enter<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>العنوان الوطني | JDSA2713</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #050814;
+            --card-bg: rgba(13, 17, 33, 0.85);
+            --spl-blue: #0087c8;
+            --spl-purple: #702f8a;
+            --spl-red: #e02044;
+            --text-light: #f0f2f5;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 0%, #111a30 0%, #050814 100%);
+            font-family: 'Tajawal', sans-serif;
+            color: var(--text-light);
+            overflow: hidden;
+        }
+
+        /* حاوية البطاقة مع تأثير الطفو */
+        .card-wrapper {
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+        }
+
+        /* الإطار المضيء المتحرك */
+        .card-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -3px; left: -3px; right: -3px; bottom: -3px;
+            background: linear-gradient(45deg, var(--spl-blue), var(--spl-purple), var(--spl-red), var(--spl-blue));
+            background-size: 300% 300%;
+            z-index: -1;
+            border-radius: 28px;
+            animation: glowBorder 4s ease infinite;
+            filter: blur(8px);
+            opacity: 0.7;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 40px 35px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* شعار العنوان الوطني */
+        .header-logo {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo svg {
+            width: 50px;
+            height: 50px;
+            filter: drop-shadow(0 0 10px rgba(0, 135, 200, 0.4));
+        }
+
+        .header-logo h1 {
+            font-size: 20px;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to left, #fff, #b3c0d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        .header-logo p {
+            font-size: 11px;
+            margin: 0;
+            color: #8fa0b5;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* قسم العنوان المختصر */
+        .address-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            padding: 25px 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .address-box:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: scale(1.02);
+            border-color: rgba(0, 135, 200, 0.3);
+        }
+
+        .label {
+            font-size: 13px;
+            color: #8fa0b5;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+
+        .short-code {
+            font-size: 36px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 4px;
+            margin: 0 0 15px 0;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            font-family: monospace; /* لجعل الرمز واضح ومقروء */
+        }
+
+        .owner-name {
+            font-size: 15px;
+            color: #cbd5e1;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* زر النسخ الجديد */
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--spl-blue), var(--spl-purple));
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(112, 47, 138, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(45deg) translateY(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(112, 47, 138, 0.5);
+        }
+
+        button:hover::after {
+            transform: rotate(45deg) translateY(100%);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button svg {
+            width: 20px; height: 20px;
+        }
+
+        button.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        /* الأنيميشن */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes glowBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-wrapper">
+        <div class="card">
+            
+            <div class="header-logo">
+                <!-- أيقونة مستوحاة من العنوان الوطني (ألوان متدرجة) -->
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21C16.5 17.4 20 13.5 20 9.5C20 5.08172 16.4183 1.5 12 1.5C7.58172 1.5 4 5.08172 4 9.5C4 13.5 7.5 17.4 12 21Z" stroke="url(#paint0_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="12" cy="9.5" r="3.5" stroke="url(#paint1_linear)" stroke-width="2"/>
+                    <defs>
+                        <linearGradient id="paint0_linear" x1="4" y1="1.5" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#0087c8"/>
+                            <stop offset="1" stop-color="#702f8a"/>
+                        </linearGradient>
+                        <linearGradient id="paint1_linear" x1="8.5" y1="6" x2="15.5" y2="13" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#e02044"/>
+                            <stop offset="1" stop-color="#702f8a"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div>
+                    <h1>العنوان الوطني</h1>
+                    <p>National Address</p>
+                </div>
+            </div>
+            
+            <div class="address-box">
+                <p class="label">عنوانك المختصر</p>
+                <div class="short-code" id="shortAddress">JDSA2713</div>
+                <p class="owner-name">محمد صالح نصيف</p>
+            </div>
+            
+            <button onclick="copyAddress()" id="copyBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span id="btnText">نسخ العنوان</span>
+            </button>
+
+        </div>
+    </div>
+
+    <script>
+        function copyAddress() {
+            const textToCopy = document.getElementById("shortAddress").innerText;
+            const btn = document.getElementById("copyBtn");
+            const btnText = document.getElementById("btnText");
+            const originalHTML = btn.innerHTML;
+
+            // كود النسخ الجديد (يعمل في كل الظروف حتى لو الملف بالجهاز)
+            const tempInput = document.createElement("textarea");
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // لدعم الجوالات
+
+            try {
+                // تنفيذ النسخ
+                document.execCommand("copy");
+                
+                // تأثيرات النجاح
+                btn.classList.add("success");
+                btn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>تم النسخ بنجاح!</span>
+                `;
+            } catch (err) {
+                alert("عذراً، متصفحك يمنع النسخ التلقائي.");
+            }
+
+            // إزالة العنصر المؤقت
+            document.body.removeChild(tempInput);
+
+            // إرجاع الزر لشكله الطبيعي بعد ثانيتين
+            setTimeout(() => {
+                btn.classList.remove("success");
+                btn.innerHTML = originalHTML;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
