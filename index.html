@@ -5,22 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>العنوان الوطني | National Address</title>
     
-    <!-- إعدادات معاينة الرابط عند الإرسال (واتساب، تويتر، ديسكورد، وغيرها) -->
+    <!-- إعدادات معاينة الرابط -->
     <meta property="og:title" content="العنوان الوطني الخاص بي">
     <meta property="og:description" content="تفاصيل العنوان الوطني والموقع على الخريطة لتسهيل التوصيل والوصول.">
     <meta property="og:image" content="5.png">
     <meta property="og:type" content="website">
 
-    <!-- إعدادات المعاينة الإضافية لتويتر والمنصات الأخرى -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="العنوان الوطني الخاص بي">
     <meta name="twitter:description" content="تفاصيل العنوان الوطني والموقع على الخريطة لتسهيل التوصيل والوصول.">
     <meta name="twitter:image" content="5.png">
 
-    <!-- خطوط احترافية من جوجل -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     
     <style>
+        /* المتغيرات الأساسية (الوضع الداكن الافتراضي) */
         :root {
             --bg-main: #0b0f19;
             --bg-gradient: radial-gradient(circle at 50% 30%, #1e293b 0%, #0f172a 100%);
@@ -28,14 +27,32 @@
             --border-glow: rgba(255, 255, 255, 0.08);
             --primary-accent: #0087c8;
             --secondary-accent: #702f8a;
-            --maps-green: #10b981;
-            --text-white: #ffffff;
+            --text-main: #ffffff;
             --text-muted: #94a3b8;
+            --item-bg: rgba(255, 255, 255, 0.03);
+            --item-border: rgba(255, 255, 255, 0.05);
+            --hero-bg: rgba(255, 255, 255, 0.02);
+            --btn-text: #ffffff;
+            --overlay-bg: rgba(7, 10, 19, 0.95);
+        }
+
+        /* متغيرات الوضع الفاتح (Light Mode) */
+        body.light-theme {
+            --bg-main: #f1f5f9;
+            --bg-gradient: radial-gradient(circle at 50% 30%, #ffffff 0%, #e2e8f0 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --border-glow: rgba(0, 0, 0, 0.1);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --item-bg: rgba(0, 0, 0, 0.03);
+            --item-border: rgba(0, 0, 0, 0.05);
+            --hero-bg: rgba(0, 0, 0, 0.02);
+            --overlay-bg: rgba(241, 245, 249, 0.95);
         }
 
         * {
             box-sizing: border-box;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, transform 0.3s ease;
         }
 
         body {
@@ -45,18 +62,18 @@
             background-color: var(--bg-main);
             background-image: var(--bg-gradient);
             font-family: 'Tajawal', 'Inter', sans-serif;
-            color: var(--text-white);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
             overflow-x: hidden;
         }
 
-        /* 1. شاشة اختيار اللغة (Splash Screen) */
+        /* شاشة اختيار اللغة */
         #langOverlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(7, 10, 19, 0.95);
+            background: var(--overlay-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             z-index: 999;
@@ -65,31 +82,355 @@
             justify-content: center;
             align-items: center;
             gap: 30px;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
         #langOverlay.fade-out {
             opacity: 0;
             pointer-events: none;
-            transform: scale(1.1);
-        }
-
-        .welcome-title {
-            text-align: center;
-            margin-bottom: 10px;
+            transform: scale(1.05);
         }
 
         .welcome-title h2 {
-            font-size: 24px;
-            margin: 0 0 8px 0;
-            background: linear-gradient(to right, #fff, var(--text-muted));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 24px; margin: 0 0 8px 0;
+            color: var(--text-main); text-align: center;
         }
 
-        .lang-buttons-wrapper {
-            display: flex;
-            gap: 20px;
+        .lang-buttons-wrapper { display: flex; gap: 20px; }
+        
+        .lang-btn {
+            background: var(--item-bg);
+            border: 1px solid var(--border-glow);
+            padding: 20px 40px; border-radius: 16px;
+            color: var(--text-main);
+            font-size: 18px; font-weight: 700;
+            cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 150px;
         }
+        .lang-btn:hover {
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            color: white; border-color: transparent; transform: translateY(-5px);
+        }
+
+        /* الحاوية الرئيسية والبطاقة */
+        .main-container {
+            width: 100%; max-width: 420px; padding: 20px;
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .main-container.show { opacity: 1; transform: translateY(0); }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow); border-radius: 28px;
+            padding: 30px 24px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        /* أزرار التحكم العلوية (اللغة والثيم) */
+        .top-controls {
+            position: absolute; top: 20px; left: 20px; right: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .control-btn {
+            background: var(--item-bg); border: 1px solid var(--border-glow);
+            color: var(--text-muted); padding: 8px 14px; border-radius: 20px;
+            font-size: 12px; cursor: pointer; font-weight: bold;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .control-btn:hover { background: var(--item-border); color: var(--text-main); }
+        .control-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+        /* الشعار والعنوان المختصر */
+        .logo-section { text-align: center; margin-bottom: 20px; margin-top: 30px; }
+        .logo-section svg { width: 55px; height: 55px; margin-bottom: 10px; }
+        .logo-section h1 { font-size: 22px; margin: 0; font-weight: 800; color: var(--text-main); }
+
+        .hero-box {
+            background: var(--hero-bg); border: 1px solid var(--item-border);
+            border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 20px;
+        }
+        .hero-label { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
+        .code-display {
+            font-size: 38px; font-weight: 900; letter-spacing: 2px; margin: 0;
+            font-family: 'Inter', monospace; color: var(--text-main);
+        }
+
+        /* الأزرار الأساسية */
+        .actions-wrapper { display: flex; flex-direction: column; gap: 12px; }
+        
+        button.action-btn {
+            width: 100%; padding: 16px; border-radius: 14px; font-size: 15px; font-weight: 700;
+            cursor: pointer; border: none; display: flex; justify-content: center; align-items: center; gap: 10px;
+            color: white;
+        }
+        button.action-btn:active { transform: translateY(1px); }
+        button.action-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; }
+
+        .btn-copy { background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent)); }
+        .btn-copy:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 135, 200, 0.3); }
+        .btn-copy.success { background: #10b981 !important; }
+
+        .btn-outline {
+            background: transparent; border: 2px solid var(--primary-accent) !important;
+            color: var(--text-main) !important;
+        }
+        .btn-outline:hover { background: rgba(0, 135, 200, 0.1); transform: translateY(-2px); }
+
+        .btn-maps { background: linear-gradient(135deg, #059669, #10b981); margin-top: 10px; }
+        .btn-maps:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); }
+        .btn-maps svg { fill: currentColor; stroke: none; }
+
+        /* قسم التفاصيل المخفي (Accordion) */
+        .details-section {
+            max-height: 0; overflow: hidden; opacity: 0;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease, margin 0.3s ease;
+        }
+        .details-section.expanded { max-height: 1000px; opacity: 1; margin-top: 20px; }
+
+        /* صورة العمارة */
+        .building-img-wrapper {
+            width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 15px;
+            border: 1px solid var(--item-border); background: var(--item-bg);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .building-img-wrapper img { width: 100%; height: auto; display: block; object-fit: cover; }
+
+        .details-list { display: flex; flex-direction: column; gap: 10px; }
+        .detail-item {
+            background: var(--item-bg); padding: 12px 16px; border-radius: 12px;
+            border-right: 3px solid var(--primary-accent);
+        }
+        html[dir="ltr"] .detail-item { border-right: none; border-left: 3px solid var(--primary-accent); }
+        
+        .detail-item.description-item { border-color: var(--secondary-accent); }
+        
+        .item-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .item-value { font-size: 14px; font-weight: 700; color: var(--text-main); line-height: 1.4; }
+
+    </style>
+</head>
+<body>
+
+    <!-- واجهة اختيار اللغة -->
+    <div id="langOverlay">
+        <div class="welcome-title">
+            <h2>العنوان الوطني الإلكتروني</h2>
+            <h2 style="font-family:'Inter'; font-size:18px; color: var(--text-muted);">National Address Portal</h2>
+        </div>
+        <div class="lang-buttons-wrapper">
+            <button class="lang-btn" onclick="selectLanguage('ar')">العربية <span>Arabic</span></button>
+            <button class="lang-btn" onclick="selectLanguage('en')" style="font-family:'Inter';">English <span>إنجليزي</span></button>
+        </div>
+    </div>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="main-container" id="mainContainer">
+        <div class="card">
+            
+            <!-- أزرار التحكم العلوية -->
+            <div class="top-controls">
+                <button class="control-btn" onclick="toggleLangLanguage()" id="langSwitcherBtn">English</button>
+                <button class="control-btn" onclick="toggleTheme()" id="themeSwitcherBtn" title="تغيير المظهر">
+                    <!-- أيقونة الوضع المظلم/الفاتح -->
+                    <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+            </div>
+
+            <div class="logo-section">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21C16.5 17.4 20 13.5 20 9.5C20 5.08172 16.4183 1.5 12 1.5C7.58172 1.5 4 5.08172 4 9.5C4 13.5 7.5 17.4 12 21Z" stroke="url(#p1)" stroke-width="2.5"/>
+                    <circle cx="12" cy="9.5" r="3.5" stroke="url(#p2)" stroke-width="2"/>
+                    <defs>
+                        <linearGradient id="p1" x1="4" y1="1.5" x2="20" y2="21" gradientUnits="userSpaceOnUse"><stop stop-color="#0087c8"/><stop offset="1" stop-color="#702f8a"/></linearGradient>
+                        <linearGradient id="p2" x1="8.5" y1="6" x2="15.5" y2="13" gradientUnits="userSpaceOnUse"><stop stop-color="#e02044"/><stop offset="1" stop-color="#702f8a"/></linearGradient>
+                    </defs>
+                </svg>
+                <h1 id="uiTitle">العنوان الوطني</h1>
+            </div>
+
+            <div class="hero-box">
+                <div class="hero-label" id="uiShortAddressLabel">العنوان المختصر</div>
+                <div class="code-display" id="shortCode">JDSA2713</div>
+            </div>
+
+            <!-- الأزرار الأساسية التي تظهر دائماً -->
+            <div class="actions-wrapper">
+                <button class="action-btn btn-copy" onclick="handleCopy()" id="copyBtn">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <span id="uiCopyTxt">نسخ العنوان المختصر</span>
+                </button>
+                
+                <button class="action-btn btn-outline" onclick="toggleDetails()" id="expandBtn">
+                    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg>
+                    <span id="uiExpandTxt">عرض الموقع والتفاصيل</span>
+                </button>
+            </div>
+
+            <!-- قسم التفاصيل المخفي (يظهر عند الضغط) -->
+            <div class="details-section" id="detailsSection">
+                
+                <!-- صورة العمارة -->
+                <div class="building-img-wrapper">
+                    <!-- تأكد أن اسم الصورة hom.png متطابق تماماً -->
+                    <img src="hom.png" alt="صورة العمارة" onerror="this.style.display='none'">
+                </div>
+
+                <div class="details-list">
+                    <div class="detail-item">
+                        <div class="item-label" id="uiDistrictLabel">الحي</div>
+                        <div class="item-value" id="uiDistrictValue">حي الصفا 2</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="item-label" id="uiStreetLabel">الشارع</div>
+                        <div class="item-value" id="uiStreetValue">شارع محمد صالح نصيف</div>
+                    </div>
+                    <div class="detail-item description-item">
+                        <div class="item-label" id="uiDescLabel">الوصف المفصل للبيت</div>
+                        <div class="item-value" id="uiDescValue">بعد شواية بلدي يمين، أول عمارة على اليسار</div>
+                    </div>
+                </div>
+
+                <!-- زر قوقل ماب الفعلي (بالرابط الخاص بك) -->
+                <button class="action-btn btn-maps" onclick="openGoogleMaps()">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    <span id="uiMapsTxt">فتح في Google Maps</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const dictionary = {
+            ar: {
+                title: "العنوان الوطني", shortLabel: "العنوان المختصر",
+                districtLabel: "الحي", districtVal: "حي الصفا 2",
+                streetLabel: "الشارع", streetVal: "شارع محمد صالح نصيف",
+                descLabel: "الوصف المفصل", descVal: "بعد شواية بلدي يمين، أول عمارة على اليسار",
+                copyBtnTxt: "نسخ العنوان", copiedTxt: "تم النسخ! ✔️",
+                expandBtnTxt: "عرض الموقع والتفاصيل", collapseBtnTxt: "إخفاء التفاصيل",
+                mapsBtnTxt: "فتح في Google Maps", switcher: "English", dir: "rtl"
+            },
+            en: {
+                title: "National Address", shortLabel: "Short Code",
+                districtLabel: "District", districtVal: "Al Safa 2",
+                streetLabel: "Street", streetVal: "Muhammad Salih Nassif St.",
+                descLabel: "Detailed Description", descVal: "After Shawaya Baladi turn right, 1st building on left",
+                copyBtnTxt: "Copy Code", copiedTxt: "Copied! ✔️",
+                expandBtnTxt: "Show Location & Details", collapseBtnTxt: "Hide Details",
+                mapsBtnTxt: "Open Google Maps", switcher: "العربية", dir: "ltr"
+            }
+        };
+
+        let currentLang = 'ar';
+        let isLightMode = false;
+
+        function selectLanguage(lang) {
+            currentLang = lang;
+            applyLocalization();
+            document.getElementById("langOverlay").classList.add("fade-out");
+            setTimeout(() => { document.getElementById("mainContainer").classList.add("show"); }, 300);
+        }
+
+        function toggleLangLanguage() {
+            currentLang = (currentLang === 'ar') ? 'en' : 'ar';
+            applyLocalization();
+            // تحديث نص زر التوسيع بناءً على الحالة الحالية
+            const details = document.getElementById("detailsSection");
+            const expandTxtSpan = document.getElementById("uiExpandTxt");
+            expandTxtSpan.innerText = details.classList.contains("expanded") 
+                ? dictionary[currentLang].collapseBtnTxt 
+                : dictionary[currentLang].expandBtnTxt;
+        }
+
+        function applyLocalization() {
+            const data = dictionary[currentLang];
+            document.documentElement.setAttribute("dir", data.dir);
+            document.documentElement.lang = currentLang;
+            
+            document.getElementById("uiTitle").innerText = data.title;
+            document.getElementById("uiShortAddressLabel").innerText = data.shortLabel;
+            document.getElementById("uiDistrictLabel").innerText = data.districtLabel;
+            document.getElementById("uiDistrictValue").innerText = data.districtVal;
+            document.getElementById("uiStreetLabel").innerText = data.streetLabel;
+            document.getElementById("uiStreetValue").innerText = data.streetVal;
+            document.getElementById("uiDescLabel").innerText = data.descLabel;
+            document.getElementById("uiDescValue").innerText = data.descVal;
+            document.getElementById("uiCopyTxt").innerText = data.copyBtnTxt;
+            document.getElementById("uiMapsTxt").innerText = data.mapsBtnTxt;
+            document.getElementById("langSwitcherBtn").innerText = data.switcher;
+            
+            // التحقق من حالة زر التفاصيل لتحديث نصه بشكل صحيح
+            const details = document.getElementById("detailsSection");
+            if(!details.classList.contains("expanded")) {
+                document.getElementById("uiExpandTxt").innerText = data.expandBtnTxt;
+            } else {
+                document.getElementById("uiExpandTxt").innerText = data.collapseBtnTxt;
+            }
+        }
+
+        function toggleTheme() {
+            isLightMode = !isLightMode;
+            if(isLightMode) {
+                document.body.classList.add("light-theme");
+            } else {
+                document.body.classList.remove("light-theme");
+            }
+        }
+
+        function toggleDetails() {
+            const details = document.getElementById("detailsSection");
+            const btnTxtSpan = document.getElementById("uiExpandTxt");
+            const btnIcon = document.querySelector("#expandBtn svg");
+
+            if (details.classList.contains("expanded")) {
+                details.classList.remove("expanded");
+                btnTxtSpan.innerText = dictionary[currentLang].expandBtnTxt;
+                btnIcon.innerHTML = '<path d="M6 9l6 6 6-6"></path>'; // سهم للأسفل
+            } else {
+                details.classList.add("expanded");
+                btnTxtSpan.innerText = dictionary[currentLang].collapseBtnTxt;
+                btnIcon.innerHTML = '<path d="M18 15l-6-6-6 6"></path>'; // سهم للأعلى
+            }
+        }
+
+        function handleCopy() {
+            const codeText = document.getElementById("shortCode").innerText;
+            const btn = document.getElementById("copyBtn");
+            const btnTxtSpan = document.getElementById("uiCopyTxt");
+            const originalHTML = btn.innerHTML;
+
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = codeText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            tempTextArea.setSelectionRange(0, 99999);
+
+            try {
+                document.execCommand("copy");
+                btn.classList.add("success");
+                btnTxtSpan.innerText = dictionary[currentLang].copiedTxt;
+            } catch (err) {
+                alert("يرجى نسخ الكود يدوياً: " + codeText);
+            }
+
+            document.body.removeChild(tempTextArea);
+            setTimeout(() => {
+                btn.classList.remove("success");
+                btn.innerHTML = originalHTML;
+                btnTxtSpan.innerText = dictionary[currentLang].copyBtnTxt;
+            }, 2000);
+        }
+
+        function openGoogleMaps() {
+            // الرابط المباشر والدقيق الذي طلبته
+            window.open("https://maps.app.goo.gl/rqd4kMKA3ZKFEg1s7", "_blank");
+        }
+    </script>
+</body>
+</html>
 
         .lang-btn {
             background: rgba(255, 255, 255, 0.03);
